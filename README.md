@@ -1,42 +1,19 @@
-json11
-------
+# JSON11修改
 
-json11 is a tiny JSON library for C++11, providing JSON parsing and serialization.
+未对JSON11做修改的前提下，增加了一个基于JSON11的类，string2buffer，能够根据已有的json文件中的格式，读取需要处理的json文件的相关内容，并保存在一个buffer的字符串中。
 
-The core object provided by the library is json11::Json. A Json object represents any JSON
-value: null, bool, number (int or double), string (std::string), array (std::vector), or
-object (std::map).
+---
 
-Json objects act like values. They can be assigned, copied, moved, compared for equality or
-order, and so on. There are also helper methods Json::dump, to serialize a Json to a string, and
-Json::parse (static) to parse a std::string as a Json object.
+## 运行方法
 
-It's easy to make a JSON object with C++11's new initializer syntax:
+make clean
 
-    Json my_json = Json::object {
-        { "key1", "value1" },
-        { "key2", false },
-        { "key3", Json::array { 1, 2, 3 } },
-    };
-    std::string json_str = my_json.dump();
+make
 
-There are also implicit constructors that allow standard and user-defined types to be
-automatically converted to JSON. For example:
+./test
 
-    class Point {
-    public:
-        int x;
-        int y;
-        Point (int x, int y) : x(x), y(y) {}
-        Json to_json() const { return Json::array { x, y }; }
-    };
+---
 
-    std::vector<Point> points = { { 1, 2 }, { 10, 20 }, { 100, 200 } };
-    std::string points_json = Json(points).dump();
+## 遇到的坑
 
-JSON values can have their values queried and inspected:
-
-    Json json = Json::array { Json::object { { "k", "v" } } };
-    std::string str = json[0]["k"].string_value();
-
-More documentation is still to come. For now, see json11.hpp.
+连续四次进行new操作会导致内存分配经常失败，因此将结构体进行简化，舍弃结构体，合并两个两个函数，达到只进行两次new操作的目的。
